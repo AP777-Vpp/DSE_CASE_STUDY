@@ -1,0 +1,97 @@
+SIZE = 10
+hash_table = [None] * SIZE
+DELETED = "DELETED"
+def hash_function(roll_no):
+    return roll_no % SIZE
+def insert_student(roll_no, name, marks):
+    index = hash_function(roll_no)
+    for i in range(SIZE):
+        pos = (index + i) % SIZE
+        if hash_table[pos] is None or hash_table[pos] == DELETED:
+            hash_table[pos] = (roll_no, name, marks)
+            print("Student record added successfully!")
+            return
+        if hash_table[pos][0] == roll_no:
+            print("Roll number already exists!")
+            return
+    print("Hash table is full!")
+def search_student(roll_no):
+    index = hash_function(roll_no)
+    for i in range(SIZE):
+        pos = (index + i) % SIZE
+        record = hash_table[pos]
+        if record is None:
+            break
+        if record != DELETED and record[0] == roll_no:
+            print("\nStudent Found:")
+            print("Roll Number:", record[0])
+            print("Name:", record[1])
+            print("Marks:", record[2])
+            return
+    print("Student record not found.")
+def display_students():
+    print("\n--- Student Records ---")
+    found = False
+    for record in hash_table:
+        if record is not None and record != DELETED:
+            print("Roll No:", record[0],
+                  "| Name:", record[1],
+                  "| Marks:", record[2])
+            found = True
+    if not found:
+        print("No student records available.")
+def delete_student(roll_no):
+    index = hash_function(roll_no)
+
+    for i in range(SIZE):
+        pos = (index + i) % SIZE
+        record = hash_table[pos]
+        if record is None:
+            break
+        if record != DELETED and record[0] == roll_no:
+            hash_table[pos] = DELETED
+            print("Student record deleted successfully!")
+            return
+
+    print("Student record not found.")
+while True:
+    print("\n===== STUDENT RECORD MANAGEMENT =====")
+    print("1. Add Student")
+    print("2. Search Student")
+    print("3. Display All Students")
+    print("4. Delete Student")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        try:
+            roll = int(input("Enter roll number: "))
+            name = input("Enter student name: ")
+            marks = float(input("Enter marks: "))
+
+            if not name.strip() or not 0 <= marks <= 100:
+                print("Enter a valid name and marks (0-100).")
+            else:
+                insert_student(roll, name, marks)
+        except ValueError:
+            print("Please enter valid numeric values.")
+    elif choice == "2":
+        try:
+            roll = int(input("Enter roll number to search: "))
+            search_student(roll)
+        except ValueError:
+            print("Invalid roll number.")
+    elif choice == "3":
+        display_students()
+    elif choice == "4":
+        try:
+            roll = int(input("Enter roll number to delete: "))
+            delete_student(roll)
+        except ValueError:
+            print("Invalid roll number.")
+    elif choice == "5":
+        print("Exiting program. Thank you!")
+        break
+    else:
+        print("Invalid choice! Please try again.")
