@@ -1,0 +1,46 @@
+
+n = int(input("Enter number of students: "))
+students = []
+for i in range(n):
+    name = input(f"Enter name of student {i + 1}: ")
+    students.append(name)
+matrix = [[0] * n for _ in range(n)]
+m = int(input("Enter number of friendship connections: "))
+print("\nEnter friendship pairs using student numbers.")
+
+for i in range(m):
+    u, v = map(int, input(
+        f"Connection {i + 1} (1 to {n}): "
+    ).split())
+
+    if 1 <= u <= n and 1 <= v <= n and u != v:
+        matrix[u - 1][v - 1] = 1
+        matrix[v - 1][u - 1] = 1
+    else:
+        print("Invalid connection. Try again.")
+print("\nCOLLEGE FRIENDSHIP NETWORK")
+print("\nAdjacency Matrix:")
+
+print(" " * 15, end="")
+for name in students:
+    print(f"{name[:10]:>12}", end="")
+print()
+for i in range(n):
+    print(f"{students[i]:<15}", end="")
+    for j in range(n):
+        print(f"{matrix[i][j]:>12}", end="")
+    print()
+
+print("\nFriendship Details:")
+
+for i in range(n):
+    friends = [
+        students[j] for j in range(n)
+        if matrix[i][j] == 1
+    ]
+
+    if friends:
+        print(f"{students[i]} is friends with: "
+              + ", ".join(friends))
+    else:
+        print(f"{students[i]} has no friends.")
