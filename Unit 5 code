@@ -1,0 +1,67 @@
+def dijkstra(graph, start, destination):
+    distances = {stop: float('inf') for stop in graph}
+    previous = {stop: None for stop in graph}
+    distances[start] = 0
+    unvisited = set(graph.keys())
+    while unvisited:
+        current = min(unvisited, key=lambda stop: distances[stop])
+        if distances[current] == float('inf'):
+            break
+        unvisited.remove(current)
+
+        if current == destination:
+            break
+        for neighbor, distance in graph[current]:
+            new_distance = distances[current] + distance
+            if new_distance < distances[neighbor]:
+                distances[neighbor] = new_distance
+                previous[neighbor] = current
+
+    if distances[destination] == float('inf'):
+        return None, float('inf')
+    route = []
+    current = destination
+
+    while current is not None:
+        route.append(current)
+        current = previous[current]
+    route.reverse()
+    return route, distances[destination]
+graph = {}
+n = int(input("Enter number of bus stops: "))
+for i in range(n):
+    stop = input(f"Enter name of bus stop {i + 1}: ").strip()
+    graph[stop] = []
+
+routes = int(input("Enter number of routes: "))
+
+print("Enter connected stops and distance in km.")
+
+for i in range(routes):
+    start, end, distance = input(
+        f"Route {i + 1} (stop1 stop2 distance): "
+    ).rsplit(maxsplit=2)
+
+    distance = float(distance)
+
+    if start in graph and end in graph and distance > 0:
+        graph[start].append((end, distance))
+        graph[end].append((start, distance))
+    else:
+        print("Invalid route. Please check stop names and distance.")
+source = input("Enter starting bus stop: ").strip()
+destination = input("Enter destination bus stop: ").strip()
+
+if source not in graph or destination not in graph:
+    print("Invalid starting or destination stop.")
+elif source == destination:
+    print("You are already at your destination.")
+    print("Distance: 0 km")
+else:
+    route, distance = dijkstra(graph, source, destination)
+    if route is None:
+        print("No bus route found between these stops.")
+    else:
+        print("\nShortest Bus Route:")
+        print(" -> ".join(route))
+        print("Total Distance:", distance, "km")
